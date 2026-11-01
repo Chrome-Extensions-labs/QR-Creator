@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "QR Code Creator",
+  "description": "Create custom QR codes for links, text, Wi-Fi and contacts. Scan a selected area or an image. Works locally, without an account.",
+  "version": "1.1.0",
+  "minimum_chrome_version": "127",
+  "homepage_url": "https://github.com/Chrome-Extensions-labs/QR-Creator",
+  "action": {
+    "default_title": "QR Code Creator", "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "32": "icons/icon32.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "permissions": ["activeTab", "storage", "contextMenus", "scripting", "clipboardWrite"],
+  "background": { "service_worker": "background.js" },
+  "commands": { "scan-area": { "suggested_key": { "default": "Alt+Shift+S" }, "description": "Select an area to scan a QR code" } },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'none'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'" }
+}

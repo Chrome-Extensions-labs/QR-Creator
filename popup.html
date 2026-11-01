@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Code Creator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <img src="icons/icon48.png" width="36" height="36" alt="">
+      <div><h1>QR Code Creator<span class="pixel">▮</span></h1><p>A little code. A lot to share.</p></div>
+      <span class="local-badge" title="QR processing stays on your device">LOCAL</span>
+    </header>
+    <nav class="tabs" role="tablist" aria-label="QR content type">
+      <button id="tab-url" role="tab" aria-selected="true" aria-controls="panel-url" data-type="url">↗ URL / TEXT</button>
+      <button id="tab-wifi" role="tab" aria-selected="false" aria-controls="panel-wifi" data-type="wifi" tabindex="-1">⌁ WI-FI</button>
+      <button id="tab-vcard" role="tab" aria-selected="false" aria-controls="panel-vcard" data-type="vcard" tabindex="-1">▣ CONTACT</button>
+    </nav>
+    <section class="inputs">
+      <div id="panel-url" role="tabpanel" aria-labelledby="tab-url">
+        <div class="label-row"><label for="inputUrl">LINK OR TEXT</label><button id="btnCurrentTab" class="text-btn">Use current tab ↗</button></div>
+        <textarea id="inputUrl" rows="2" placeholder="Paste a link or type something…" spellcheck="false" maxlength="4000"></textarea>
+      </div>
+      <div id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" hidden>
+        <label for="wifiSsid">NETWORK NAME</label><input id="wifiSsid" placeholder="My Wi-Fi" maxlength="128" autocomplete="off">
+        <div class="field-row"><div><label for="wifiPass">PASSWORD</label><input id="wifiPass" type="password" maxlength="128" autocomplete="off"></div><div><label for="wifiEnc">SECURITY</label><select id="wifiEnc"><option value="WPA">WPA / WPA2</option><option value="WEP">WEP</option><option value="nopass">Open network</option></select></div></div>
+        <div class="checks"><label><input id="showPassword" type="checkbox"> Show password</label><label><input id="wifiHidden" type="checkbox"> Hidden network</label></div>
+      </div>
+      <div id="panel-vcard" role="tabpanel" aria-labelledby="tab-vcard" hidden>
+        <div class="field-row"><div><label for="vcardFirst">FIRST NAME</label><input id="vcardFirst" maxlength="120" autocomplete="off"></div><div><label for="vcardLast">LAST NAME</label><input id="vcardLast" maxlength="120" autocomplete="off"></div></div>
+        <div class="field-row"><div><label for="vcardPhone">PHONE</label><input id="vcardPhone" type="tel" maxlength="80"></div><div><label for="vcardEmail">EMAIL</label><input id="vcardEmail" type="email" maxlength="160"></div></div>
+        <div class="field-row"><div><label for="vcardOrg">ORGANIZATION</label><input id="vcardOrg" maxlength="160"></div><div><label for="vcardUrl">WEBSITE</label><input id="vcardUrl" type="url" maxlength="300"></div></div>
+      </div>
+    </section>
+    <section class="preview" aria-label="QR preview">
+      <span class="preview-corner top-left" aria-hidden="true"></span><span class="preview-corner bottom-right" aria-hidden="true"></span>
+      <div id="qrCanvas" role="img" aria-label="Generated QR code"><span class="empty">Your QR code<br>will appear here</span></div>
+      <div class="preview-caption"><span id="statusMsg" role="status" aria-live="polite">ENTER A LINK TO START</span><span id="byteCount">0 B</span></div>
+    </section>
+    <p id="qrWarning" class="warning" role="status" hidden></p>
+    <div class="actions" aria-label="Export QR code">
+      <button id="btnDownloadPng" class="primary" data-export disabled>↓ PNG</button><button id="btnDownloadSvg" data-export disabled>↓ SVG</button><button id="btnCopyImg" data-export disabled>▣ Copy QR</button><button id="btnCopyData" data-export disabled>≡ Text</button>
+    </div>
+    <section class="scan-tools" aria-label="Read a QR code">
+      <div class="scan-heading"><span>READ A QR CODE</span><span class="shortcut">Alt + Shift + S</span></div>
+      <div class="field-row"><button id="btnScanArea">⌗ Select area</button><button id="btnScanFile">↥ From image</button></div>
+      <input id="scanFile" type="file" accept="image/png,image/jpeg,image/webp,image/bmp" hidden>
+      <div id="scanResult" class="scan-result" hidden>
+        <label for="scanText">DECODED CONTENT</label><textarea id="scanText" rows="3" readonly></textarea><p id="scanDomain"></p>
+        <button id="btnCopyScan">Copy text</button><a id="scanOpen" class="button" target="_blank" rel="noopener noreferrer" hidden>Open link ↗</a><button id="btnUseScan" class="text-btn">Create QR</button>
+      </div>
+    </section>
+    <details id="designDetails">
+      <summary><span>✦ Customize design</span><span class="summary-hint">COLORS · STYLES · LOGO</span></summary>
+      <div class="settings">
+        <div class="field-row"><div><label for="dotStyle">DOT STYLE</label><select id="dotStyle"><option value="square">Square</option><option value="dots">Dots</option><option value="rounded">Rounded</option><option value="classy">Classy</option><option value="classy-rounded">Classy rounded</option><option value="extra-rounded">Extra rounded</option></select></div><div><label for="cornerSqStyle">CORNERS</label><select id="cornerSqStyle"><option value="square">Square</option><option value="dot">Round</option><option value="extra-rounded">Soft square</option></select></div></div>
+        <div class="field-row"><div><label for="cornerDotStyle">CORNER CENTER</label><select id="cornerDotStyle"><option value="square">Square</option><option value="dot">Dot</option></select></div><div><label for="ecl">ERROR CORRECTION</label><select id="ecl"><option value="L">L · 7%</option><option value="M" selected>M · 15%</option><option value="Q">Q · 25%</option><option value="H">H · 30%</option></select></div></div>
+        <div class="color-row"><label>DOTS<input id="dotColor" type="color" value="#14213d"></label><label>BACKGROUND<input id="bgColor" type="color" value="#ffffff"></label><label>CORNERS<input id="cornerColor" type="color" value="#14213d"></label><label class="invert-label"><input id="invert" type="checkbox"> Invert</label></div>
+        <div class="palettes" aria-label="Quick color palettes"><button class="palette midnight" data-palette="#14213d,#ffffff,#14213d" title="Midnight">Midnight</button><button class="palette forest" data-palette="#14543a,#f4fff7,#14543a" title="Forest">Forest</button><button class="palette plum" data-palette="#662358,#fff5fc,#662358" title="Plum">Plum</button><button class="palette ink" data-palette="#000000,#ffffff,#000000" title="Ink">Ink</button></div>
+        <div class="field-row logo-row"><button id="btnUploadLogo">+ Add logo</button><button id="btnRemoveLogo" hidden>Remove logo</button><img id="logoThumb" width="32" height="32" alt="Selected logo" hidden></div>
+        <input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp" hidden><p class="hint">A logo uses high error correction automatically. Test custom codes before sharing.</p>
+        <div class="field-row"><div><label for="exportSize">PNG SIZE</label><select id="exportSize"><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option><option value="2048">2048 × 2048</option></select></div><button id="btnReset" class="reset-btn">Reset design</button></div>
+        <div class="preset-save"><label for="presetName">SAVE DESIGN PRESET</label><div class="field-row"><input id="presetName" placeholder="Preset name" maxlength="24"><button id="btnSavePreset">Save</button></div></div>
+        <div id="presetsGrid" class="presets"></div><p class="hint">Presets save the design only. Your QR content is never saved.</p>
+      </div>
+    </details>
+    <details><summary><span>⌁ Link hover preview</span><span class="summary-hint">THIS PAGE</span></summary><div class="settings"><label class="hover-label"><input id="toggleHover" type="checkbox"> Show a QR when I hover over a link</label><p class="hint">Enabled for this page until it reloads. Hover for a moment to preview.</p></div></details>
+    <footer><a href="https://github.com/Chrome-Extensions-labs/QR-Creator" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.3 1.8 1.3 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg><span>Independent &amp; open source</span><span aria-hidden="true">↗</span></a><span>v1.1.0</span></footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="libs/qr-code-styling.min.js"></script><script src="qr-core.js"></script><script src="popup.js"></script>
+</body>
+</html>
